@@ -1,5 +1,6 @@
 import { AggregateRoot } from 'src/@core/commom/domain/aggregate-root';
 import Uuid from 'src/@core/commom/domain/value-objects/uuid.vo';
+import { EventSection } from './event-section';
 import { PartnerId } from './partnert.entity';
 
 export class EventId extends Uuid {}
@@ -20,6 +21,7 @@ export class EventConstructorProps {
   total_spots: number;
   total_spots_reserved: number;
   partner_id: PartnerId | string;
+  sections?: Set<EventSection>;
 }
 export class Event extends AggregateRoot {
   id: EventId;
@@ -30,7 +32,7 @@ export class Event extends AggregateRoot {
   total_spots: number;
   total_spots_reserved: number;
   partner_id: PartnerId;
-
+  sections: Set<EventSection>;
   // private _section: ICollection<EventSetion>;
 
   constructor(props: EventConstructorProps) {
@@ -49,6 +51,7 @@ export class Event extends AggregateRoot {
       typeof props.partner_id === 'string'
         ? new PartnerId(props.partner_id)
         : props.partner_id;
+    this.sections = props.sections ?? new Set<EventSection>();
     // this._sections = MyCollectionFactory.create<EventSection>(this);
   }
 
