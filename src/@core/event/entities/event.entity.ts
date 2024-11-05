@@ -12,6 +12,13 @@ export type CreateEventCommand = {
   partner_id: PartnerId;
 };
 
+export type AddSectionCommand = {
+  name: string;
+  description?: string | null;
+  total_spots: number;
+  price: number;
+};
+
 export class EventConstructorProps {
   id?: EventId | string;
   name: string;
@@ -67,6 +74,11 @@ export class Event extends AggregateRoot {
     return event;
   }
 
+  addSection(command: AddSectionCommand) {
+    const section = EventSection.create(command);
+    this.sections.add(section);
+    this.total_spots += section.total_spots;
+  }
   changeName(name: string) {
     this.name = name;
   }
@@ -77,6 +89,19 @@ export class Event extends AggregateRoot {
 
   changeDate(date: Date) {
     this.date = date;
+  }
+
+  publish() {
+    this.isPublished = true;
+  }
+
+  publishAll() {
+    this.publish();
+    this.sections.forEach((section) => section.publishAll());
+  }
+
+  unPublish() {
+    this.isPublished = false;
   }
 
   toJSON() {
@@ -93,3 +118,8 @@ export class Event extends AggregateRoot {
     };
   }
 }
+
+// class EventMapper {
+//   static toPersistence(event: Event) {}
+//   static toDomain(raw: any) {}
+// }

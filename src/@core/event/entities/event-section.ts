@@ -78,6 +78,20 @@ export class EventSection extends Entity {
     this.price = price;
   }
 
+  publish() {
+    this.is_published = true;
+  }
+
+  unPublish() {
+    this.is_published = false;
+  }
+
+  publishAll() {
+    this.spots.forEach((spot) => {
+      spot.publish();
+    });
+  }
+
   toJSON() {
     throw new Error('Method not implemented.');
   }
